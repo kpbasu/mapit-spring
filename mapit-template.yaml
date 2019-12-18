@@ -42,7 +42,7 @@ objects:
         from:
           kind: ImageStreamTag
           name: redhat-openjdk18-openshift:1.1
-          namespace: kalibas1-22288
+          namespace: openshift
       type: Source
     triggers:
     - type: ConfigChange
