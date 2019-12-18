@@ -83,5 +83,30 @@ pipeline {
         }
       }
     }
+    stage('Promote to PROD') {
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.tag("mapit:stage", "mapit:prod")
+          }
+        }
+      }
+    }
+    stage('Create PROD') {
+      when {
+        expression {
+          openshift.withCluster() {
+            return !openshift.selector('dc', 'mapit-prod').exists()
+          }
+        }
+      }
+      steps {
+        script {
+          openshift.withCluster() {
+            openshift.newApp("mapit:prod", "--name=mapit-prod").narrow('svc').create("route", "edge", "--insecure-policy=Allow")
+          }
+        }
+      }
+    } 
   }
 }
